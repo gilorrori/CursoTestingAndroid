@@ -33,7 +33,7 @@ fun ProductEntity.toDomain(): Product? {
         id = id,
         name = name,
         description = description.orEmpty(),
-        priceCents = priceCents,
+        price = priceCents,
         category = category,
         stock = stock ?: 0,
         imageUrl = imageUrl

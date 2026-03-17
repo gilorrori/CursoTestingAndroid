@@ -26,7 +26,8 @@ class ProductRepositoryImpl @Inject constructor(
 ) : ProductRepository {
 
     /* funciona para ejecutar una corrutina fuera de toda la funcionalidad del localdatasource, para que
-    * si algo falla, esto sea independiente, el */
+    * si algo falla, esto sea independiente
+    * Con SupervisorJob() ->  Si una coroutine falla → las demás continúan  */
     private val refreshScope = CoroutineScope(SupervisorJob() + dispatchers.io)
 
     /* Bloque la corrutina hasta que se termine aunque se suscriban varias veces a esta funcion, para

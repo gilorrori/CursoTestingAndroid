@@ -34,6 +34,5 @@ class GetProductsUseCase @Inject constructor(
 
             productsCombine
         }
-
     }
 }

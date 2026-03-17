@@ -1,5 +1,10 @@
 package com.gilorroristore.cursotestingandroid.productlist.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,16 +31,16 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
 import com.gilorroristore.cursotestingandroid.productlist.presentation.components.FiltersMenu
+import com.gilorroristore.cursotestingandroid.productlist.presentation.components.HomeTopAppBar
 import com.gilorroristore.cursotestingandroid.productlist.presentation.components.ProductItem
 
 @Composable
 fun ProductListScreen(
-    modifier: Modifier = Modifier,
-    productListViewModel: ProductListViewModel = hiltViewModel()
-) {
-    /* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
+    modifier: Modifier = Modifier, productListViewModel: ProductListViewModel = hiltViewModel()
+) {/* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
     val uiState by productListViewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val filtersVisible by productListViewModel.filtersVisible.collectAsStateWithLifecycle()
 
     // Funcion que se ejecutará cada vez que haya un cambio
     LaunchedEffect(Unit) {
@@ -49,8 +54,12 @@ fun ProductListScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) }
-    ) { paddingValues ->
+        topBar = {
+            HomeTopAppBar(
+                filtersVisible = filtersVisible,
+                onFiltersSelect = { showFilters -> productListViewModel.setFilterVisible(showFilters) })
+        },
+        snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
 
         when (val state = uiState) {
             is ProductListUiState.Loading -> {
@@ -73,9 +82,7 @@ fun ProductListScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = state.message,
-                        fontSize = 30.sp,
-                        color = Color.Red
+                        text = state.message, fontSize = 30.sp, color = Color.Red
                     )
                 }
             }
@@ -86,10 +93,20 @@ fun ProductListScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    FiltersMenu(
-                        state = state,
-                        onCategorySelected = { category -> productListViewModel.setCategory(category) },
-                        onSortSelected = { productListViewModel.setSortOption() })
+                    AnimatedVisibility(
+                        visible = filtersVisible,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
+                        FiltersMenu(
+                            state = state,
+                            onCategorySelected = { category ->
+                                productListViewModel.setCategory(
+                                    category
+                                )
+                            },
+                            onSortSelected = { productListViewModel.setSortOption() })
+                    }
 
                     Text(
                         text = "${state.products.size} productos",
@@ -120,9 +137,9 @@ fun ProductListScreen(
                     } else {
                         LazyColumn {
                             items(state.products) { product: Product ->
-                               ProductItem(product, onClick = {
-                                   //product.id
-                               })
+                                ProductItem(product, onClick = {
+                                    //product.id
+                                })
                             }
                         }
                     }

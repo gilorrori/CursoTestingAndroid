@@ -1,4 +1,4 @@
-package com.gilorroristore.cursotestingandroid.core.presentation.extensions
+package com.gilorroristore.cursotestingandroid.core.presentation.ex
 
 import java.util.Locale
 

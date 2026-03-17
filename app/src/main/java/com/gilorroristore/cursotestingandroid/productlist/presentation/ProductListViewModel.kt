@@ -1,9 +1,9 @@
 package com.gilorroristore.cursotestingandroid.productlist.presentation
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
+import com.gilorroristore.cursotestingandroid.productlist.domain.models.SortOption
 import com.gilorroristore.cursotestingandroid.productlist.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +25,7 @@ class ProductListViewModel @Inject constructor(
     //Inicializando nuestro state de la screen
     private val _uiState = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading)
 
-    // asStateFlow es usado para proteger el _uiState de modificarlo por fuera mediante (uiState as Mutablestateflow).valie = ...
+    // asStateFlow es usado para proteger el _uiState de modificarlo por fuera mediante (uiState as Mutablestateflow).value = ...
     val uiState: StateFlow<ProductListUiState> = _uiState.asStateFlow()
 
     /* para que si se lanza un evento antes de que se este escuchando, no se pierda *
@@ -44,14 +45,32 @@ class ProductListViewModel @Inject constructor(
         getProductsUseCase()
             // Cada vez que devuelva un flow
             .onEach { products: List<Product> ->
-                _uiState.value = ProductListUiState.Success(products)
+
+                /*
+                se recorre cada producto y se obtiene la categoria siempre y cuando sean
+                distintos y ademas ordenados */
+                val categories = products.map { it.category }.distinct().sorted()
+
+                _uiState.value = ProductListUiState.Success(
+                    products = products,
+                    categories = categories,
+                    selectedCategory = null,
+                    sortOption = SortOption.NONE
+                )
             }.catch { e: Throwable ->
                 _uiState.value = ProductListUiState.Error(e.message.orEmpty())
             }
             //Ejecutate en scope del vm para cuando el vm muera, esto también.
             .launchIn(viewModelScope)
-
-
     }
 
+    fun setCategory(category: String?) {
+        viewModelScope.launch {
+            //Llamar a setting repository
+        }
+    }
+
+    fun setSortOption() {
+        //Llamar a setting repository
+    }
 }

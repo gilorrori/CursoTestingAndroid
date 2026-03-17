@@ -1,9 +1,6 @@
-@file:OptIn(ExperimentalTime::class)
-
 package com.gilorroristore.cursotestingandroid.productlist.domain.models
 
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
+import java.time.Instant
 
 enum class PromotionType {
     PERCENT,

@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
+import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductWithPromotion
 import com.gilorroristore.cursotestingandroid.productlist.presentation.components.FiltersMenu
 import com.gilorroristore.cursotestingandroid.productlist.presentation.components.HomeTopAppBar
 import com.gilorroristore.cursotestingandroid.productlist.presentation.components.ProductItem
@@ -136,8 +136,8 @@ fun ProductListScreen(
                         }
                     } else {
                         LazyColumn {
-                            items(state.products) { product: Product ->
-                                ProductItem(product, onClick = {
+                            items(state.products) { item: ProductWithPromotion ->
+                                ProductItem(item = item, onClick = {
                                     //product.id
                                 })
                             }

@@ -2,7 +2,7 @@ package com.gilorroristore.cursotestingandroid.productlist.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
+import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductWithPromotion
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.SortOption
 import com.gilorroristore.cursotestingandroid.productlist.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,12 +47,12 @@ class ProductListViewModel @Inject constructor(
 
         getProductsUseCase()
             // Cada vez que devuelva un flow
-            .onEach { products: List<Product> ->
+            .onEach { products: List<ProductWithPromotion> ->
 
                 /*
                 se recorre cada producto y se obtiene la categoria siempre y cuando sean
                 distintos y ademas ordenados */
-                val categories = products.map { it.category }.distinct().sorted()
+                val categories = products.map { it.product.category }.distinct().sorted()
 
                 _uiState.value = ProductListUiState.Success(
                     products = products,

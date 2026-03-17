@@ -13,6 +13,8 @@ class LocalDataSource @Inject constructor(
     private val promotionDao: PromotionDao
 ) {
 
+    /* P R O D U C T S*/
+
     /* metodos que solo funcionan como puente debido a que devuelven lo mismo que los dao */
     fun getAllProducts(): Flow<List<ProductEntity>> {
         return productDao.getAllProducts()
@@ -22,11 +24,16 @@ class LocalDataSource @Inject constructor(
         return productDao.getProductById(id)
     }
 
+    suspend fun saveProducts(products: List<ProductEntity>) {
+        productDao.replaceAll(products)
+    }
+
+    /* P R O M O T I O N S */
     fun getAllPromotions(): Flow<List<PromotionEntity>> {
         return promotionDao.getAllPromotions()
     }
 
-    suspend fun saveProducts(products: List<ProductEntity>) {
-        productDao.replaceAll(products)
+    suspend fun savePromotions(promotions: List<PromotionEntity>) {
+        promotionDao.replaceAll(promotions)
     }
 }

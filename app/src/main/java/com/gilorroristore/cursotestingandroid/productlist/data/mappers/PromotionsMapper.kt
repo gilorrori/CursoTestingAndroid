@@ -8,7 +8,8 @@ import kotlinx.serialization.json.Json
 
 fun PromotionResponse.toEntity(json: Json): PromotionEntity? {
 
-    if (startAtEpoch == null ||endAtEpoch == null){
+    /* de esta manera nos aseguramos que al guardar simplemente no se consideraran los null*/
+    if (startAtEpoch == null || endAtEpoch == null) {
         return null
     }
 

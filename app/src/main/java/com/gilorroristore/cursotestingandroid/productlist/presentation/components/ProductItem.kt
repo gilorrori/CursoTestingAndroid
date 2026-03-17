@@ -25,9 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.gilorroristore.cursotestingandroid.core.presentation.extensions.toPriceAmount
+import com.gilorroristore.cursotestingandroid.core.presentation.ex.toPriceAmount
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
-import java.util.Locale
 
 
 @Composable

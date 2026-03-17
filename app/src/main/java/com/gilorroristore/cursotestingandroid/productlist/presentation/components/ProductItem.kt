@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.gilorroristore.cursotestingandroid.core.presentation.extensions.toPriceAmount
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
 import java.util.Locale
 
@@ -101,7 +102,7 @@ fun ProductItem(product: Product, onClick: (Product) -> Unit) {
                         //mostramos vista promocion
                     } else {
                         Text(
-                            text = String.format(Locale.getDefault(), "%.2f", product.price),
+                            text = product.price.toPriceAmount(),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )

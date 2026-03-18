@@ -22,7 +22,7 @@ class GetPromotionForProduct @Inject constructor() {
             return ProductPromotion.Percent(percent = percent, discountedPrice = discountedPrice)
         }
 
-        val buyPayPromo = productPromos.firstOrNull { it.type == PromotionType.BUY_X_PAY_X }
+        val buyPayPromo = productPromos.firstOrNull { it.type == PromotionType.BUY_X_PAY_Y }
         if (buyPayPromo != null) {
             val buy = buyPayPromo.buyQuantity ?: return null
             val pay = buyPayPromo.value.toInt().coerceIn(0, buy)

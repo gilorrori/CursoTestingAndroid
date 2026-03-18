@@ -54,7 +54,7 @@ fun PromotionEntity.toDomain(json: Json): Promotion? {
 
     val finalOfferValue = when(finalType) {
         PromotionType.PERCENT -> percent
-        PromotionType.BUY_X_PAY_X -> payY
+        PromotionType.BUY_X_PAY_Y -> payY
     }?.toDouble()
 
     /* Misma validacion si finalPrice es null retorna un promotion null */
@@ -65,7 +65,7 @@ fun PromotionEntity.toDomain(json: Json): Promotion? {
         type = finalType,
         productIds = decodeProductIds,
         value = finalOfferValue,
-
+        buyQuantity = buyX,
         startTime = Instant.ofEpochSecond(startAtEpoch),
         endTime = Instant.ofEpochSecond(endAtEpoch),
     )

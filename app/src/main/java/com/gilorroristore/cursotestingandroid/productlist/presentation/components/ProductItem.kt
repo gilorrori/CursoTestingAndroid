@@ -41,7 +41,7 @@ fun ProductItem(item: ProductWithPromotion, onClick: (ProductWithPromotion) -> U
     val promotion = item.promotion
     val promoBadge = when (promotion) {
         is ProductPromotion.BuyXPayY -> promotion.label
-        is ProductPromotion.Percent -> "-${promotion.percent.toInt()}"
+        is ProductPromotion.Percent -> "-${promotion.percent.toInt()}%"
         null -> null
     }
 
@@ -87,7 +87,7 @@ fun ProductItem(item: ProductWithPromotion, onClick: (ProductWithPromotion) -> U
                             .align(Alignment.TopStart)
                             .padding(6.dp)
                             .background(
-                                MaterialTheme.colorScheme.error,
+                                color = Color.Red,
                                 shape = RoundedCornerShape(4.dp)
                             )
                             .padding(horizontal = 6.dp, vertical = 2.dp)

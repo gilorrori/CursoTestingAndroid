@@ -40,7 +40,7 @@ fun ProductListScreen(
 ) {/* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
     val uiState by productListViewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
-    val filtersVisible by productListViewModel.filtersVisible.collectAsStateWithLifecycle()
+    val filtersVisible by productListViewModel.filterVisible.collectAsStateWithLifecycle()
 
     // Funcion que se ejecutará cada vez que haya un cambio
     LaunchedEffect(Unit) {
@@ -105,7 +105,11 @@ fun ProductListScreen(
                                     category
                                 )
                             },
-                            onSortSelected = { productListViewModel.setSortOption() })
+                            onSortSelected = { sortOption ->
+                                productListViewModel.setSortOption(
+                                    sortOption
+                                )
+                            })
                     }
 
                     Text(

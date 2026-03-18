@@ -1,10 +1,15 @@
 package com.gilorroristore.cursotestingandroid.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.MiniMarketDatabase
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.ProductDao
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.PromotionDao
+import com.gilorroristore.cursotestingandroid.productlist.data.repositories.SettingsRepositoryImpl
+import com.gilorroristore.cursotestingandroid.productlist.domain.repositories.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +21,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object LocalModule {
     const val ROOM_DATABASE_NAME = "mini_market_database"
+    const val DATA_STORE_NAME = "settings"
+
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_NAME)
 
     @Provides
     @Singleton
@@ -30,7 +38,19 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun providePromotionDao(db: MiniMarketDatabase): PromotionDao{
+    fun providePromotionDao(db: MiniMarketDatabase): PromotionDao {
         return db.promotionDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.dataStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository {
+        return settingsRepositoryImpl
     }
 }

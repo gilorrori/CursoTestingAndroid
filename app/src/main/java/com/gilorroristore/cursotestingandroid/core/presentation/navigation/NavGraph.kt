@@ -7,18 +7,26 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.gilorroristore.cursotestingandroid.productlist.presentation.ProductListScreen
+import com.gilorroristore.cursotestingandroid.settings.presentation.SettingsScreen
 
 @Composable
 fun NavGraph(modifier: Modifier = Modifier) {
     // La pantalla que iniciara primero
     val backStack = rememberNavBackStack(Screen.ProductList)
-
     val entries = entryProvider<NavKey> {
+
         entry<Screen.ProductList> {
-            ProductListScreen()
+            ProductListScreen(navToSettings = {
+                backStack.add(Screen.Settings)
+            })
         }
+
+        entry<Screen.Settings> {
+            SettingsScreen()
+        }
+
         entry<Screen.Cart> {}
-        entry<Screen.Settings> {}
+
         entry<Screen.ProductDetail> {}
     }
 

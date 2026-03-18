@@ -18,10 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun HomeTopAppBar(
-    modifier: Modifier = Modifier,
     filtersVisible: Boolean = false,
     onFiltersSelect: (Boolean) -> Unit = {},
-    onSettingsSelect: () -> Unit = {}
+    navigateToSettings: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -46,7 +45,7 @@ fun HomeTopAppBar(
                 )
             }
 
-            IconButton(onClick = { onSettingsSelect() }) {
+            IconButton(onClick = { navigateToSettings() }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = null,

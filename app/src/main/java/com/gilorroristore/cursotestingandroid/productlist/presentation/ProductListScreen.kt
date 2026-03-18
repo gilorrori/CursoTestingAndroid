@@ -36,8 +36,10 @@ import com.gilorroristore.cursotestingandroid.productlist.presentation.component
 
 @Composable
 fun ProductListScreen(
-    modifier: Modifier = Modifier, productListViewModel: ProductListViewModel = hiltViewModel()
-) {/* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
+    productListViewModel: ProductListViewModel = hiltViewModel(),
+    navToSettings: () -> Unit
+) {
+    /* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
     val uiState by productListViewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val filtersVisible by productListViewModel.filterVisible.collectAsStateWithLifecycle()
@@ -57,7 +59,8 @@ fun ProductListScreen(
         topBar = {
             HomeTopAppBar(
                 filtersVisible = filtersVisible,
-                onFiltersSelect = { showFilters -> productListViewModel.setFilterVisible(showFilters) })
+                onFiltersSelect = { showFilters -> productListViewModel.setFilterVisible(showFilters) },
+                navigateToSettings = { navToSettings() })
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
 

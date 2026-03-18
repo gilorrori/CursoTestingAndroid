@@ -60,7 +60,7 @@ fun FiltersMenu(
                             onCategorySelected(category)
                         },
                         label = {
-                            Text(text = category, style = MaterialTheme.typography.labelSmall)
+                            Text(text = category, style = MaterialTheme.typography.labelMedium)
                         }
                     )
                 }

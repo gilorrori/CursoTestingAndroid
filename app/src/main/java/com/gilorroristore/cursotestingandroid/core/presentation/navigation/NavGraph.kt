@@ -22,7 +22,9 @@ fun NavGraph(modifier: Modifier = Modifier) {
         }
 
         entry<Screen.Settings> {
-            SettingsScreen()
+            SettingsScreen() {
+                backStack.remove(it)
+            }
         }
 
         entry<Screen.Cart> {}

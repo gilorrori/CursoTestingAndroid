@@ -47,10 +47,4 @@ object LocalModule {
     fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return context.dataStore
     }
-
-    @Provides
-    @Singleton
-    fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository {
-        return settingsRepositoryImpl
-    }
 }

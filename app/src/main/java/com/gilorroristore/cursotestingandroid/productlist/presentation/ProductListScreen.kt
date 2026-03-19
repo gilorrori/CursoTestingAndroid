@@ -37,7 +37,8 @@ import com.gilorroristore.cursotestingandroid.productlist.presentation.component
 @Composable
 fun ProductListScreen(
     productListViewModel: ProductListViewModel = hiltViewModel(),
-    navToSettings: () -> Unit
+    navToSettings: () -> Unit,
+    navToDetail:(String) -> Unit
 ) {
     /* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
     val uiState by productListViewModel.uiState.collectAsStateWithLifecycle()
@@ -145,7 +146,7 @@ fun ProductListScreen(
                         LazyColumn {
                             items(state.products) { item: ProductWithPromotion ->
                                 ProductItem(item = item, onClick = {
-                                    //product.id
+                                    navToDetail(it.product.id)
                                 })
                             }
                         }

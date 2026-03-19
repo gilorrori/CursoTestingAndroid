@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.gilorroristore.cursotestingandroid.detail.presentation.DetailScreen
 import com.gilorroristore.cursotestingandroid.productlist.presentation.ProductListScreen
 import com.gilorroristore.cursotestingandroid.settings.presentation.SettingsScreen
 
@@ -18,6 +19,8 @@ fun NavGraph(modifier: Modifier = Modifier) {
         entry<Screen.ProductList> {
             ProductListScreen(navToSettings = {
                 backStack.add(Screen.Settings)
+            }, navToDetail = {
+                backStack.add(Screen.ProductDetail(it))
             })
         }
 
@@ -29,7 +32,12 @@ fun NavGraph(modifier: Modifier = Modifier) {
 
         entry<Screen.Cart> {}
 
-        entry<Screen.ProductDetail> {}
+        entry<Screen.ProductDetail> {
+            DetailScreen(
+                id = it.productId,
+                navBack = { backStack.remove(it) }
+            )
+        }
     }
 
     //Cargando las entries en un composable

@@ -19,23 +19,23 @@ fun NavGraph(modifier: Modifier = Modifier) {
         entry<Screen.ProductList> {
             ProductListScreen(navToSettings = {
                 backStack.add(Screen.Settings)
-            }, navToDetail = {
-                backStack.add(Screen.ProductDetail(it))
+            }, navToDetail = { productId ->
+                backStack.add(Screen.ProductDetail(productId = productId))
             })
         }
 
         entry<Screen.Settings> {
-            SettingsScreen() {
-                backStack.remove(it)
-            }
+            SettingsScreen(
+                onBack = { backStack.remove(it) }
+            )
         }
 
         entry<Screen.Cart> {}
 
         entry<Screen.ProductDetail> {
             DetailScreen(
-                id = it.productId,
-                navBack = { backStack.remove(it) }
+                productId = it.productId,
+                onBack = { backStack.remove(it) }
             )
         }
     }

@@ -11,9 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor() : ViewModel() {
-    private val _uiState = MutableStateFlow(DetailUiState())
-    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
+class ProductDetailViewModel @Inject constructor(
+
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(ProductDetailUiState())
+    val uiState: StateFlow<ProductDetailUiState> = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<ProductDetailEvent>(extraBufferCapacity = 1)
     val event: SharedFlow<ProductDetailEvent> = _event.asSharedFlow()

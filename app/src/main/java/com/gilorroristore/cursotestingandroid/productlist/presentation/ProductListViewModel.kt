@@ -37,6 +37,7 @@ class ProductListViewModel @Inject constructor(
 
     /* para que si se lanza un evento antes de que se este escuchando, no se pierda *
     * Se ocupa el Shared debido a que son eventos que ocuren UNA UNICA VEZ.
+    * extraBufferCapacity permite almacenar el evento asignado (1) hasta que alguien escuche este evento
     * */
     private val _events = MutableSharedFlow<ProductListEvent>(extraBufferCapacity = 1)
     val events: SharedFlow<ProductListEvent> = _events

@@ -23,14 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.gilorroristore.cursotestingandroid.core.presentation.ex.roundTo2Decimals
+import com.gilorroristore.cursotestingandroid.R
 import com.gilorroristore.cursotestingandroid.core.presentation.ex.toPriceAmount
-import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductPromotion
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductWithPromotion
 
@@ -71,7 +71,9 @@ fun ProductItem(item: ProductWithPromotion, onClick: (ProductWithPromotion) -> U
                         model = product.imageUrl,
                         contentDescription = product.name,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.matchParentSize()
+                        modifier = Modifier.matchParentSize(),
+                        placeholder = painterResource(R.drawable.product_placeholder),
+                        error = painterResource(R.drawable.product_error)
                     )
                 } else {
                     Icon(

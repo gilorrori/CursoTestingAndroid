@@ -25,16 +25,23 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gilorroristore.cursotestingandroid.core.domain.model.ThemeMode
 import com.gilorroristore.cursotestingandroid.core.presentation.components.MarketTopAppBar
 
 @Composable
 fun SettingsScreen(
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
+    val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = { MarketTopAppBar("Ajustes", onBackSelected = { onBack() }) }
     ) { paddingValues ->
@@ -66,7 +73,6 @@ fun SettingsScreen(
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
-
                         Text(
                             text = "Filtros y visualizacion",
                             style = MaterialTheme.typography.titleMedium,
@@ -99,7 +105,11 @@ fun SettingsScreen(
 
                         Switch(
                             checked = true,
-                            onCheckedChange = {}
+                            onCheckedChange = { newState ->
+                                settingsViewModel.showInStockOnly(
+                                    newState
+                                )
+                            }
                         )
                     }
 
@@ -127,7 +137,7 @@ fun SettingsScreen(
                         }
                         Switch(
                             checked = true,
-                            onCheckedChange = {}
+                            onCheckedChange = { settingsViewModel.showIncludedTaxes() }
                         )
                     }
                 }
@@ -181,20 +191,20 @@ fun SettingsScreen(
                         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                             SegmentedButton(
                                 shape = SegmentedButtonDefaults.itemShape(0, 3),
-                                onClick = {},
-                                selected = true,
+                                onClick = { settingsViewModel.setThemeMode(ThemeMode.SYSTEM) },
+                                selected = uiState.themeMode == ThemeMode.SYSTEM,
                                 label = { Text(text = "Sistema") }
                             )
                             SegmentedButton(
                                 shape = SegmentedButtonDefaults.itemShape(1, 3),
-                                onClick = {},
-                                selected = false,
+                                onClick = { settingsViewModel.setThemeMode(ThemeMode.LIGHT) },
+                                selected = uiState.themeMode == ThemeMode.LIGHT,
                                 label = { Text(text = "Claro") }
                             )
                             SegmentedButton(
                                 shape = SegmentedButtonDefaults.itemShape(2, 3),
-                                onClick = {},
-                                selected = false,
+                                onClick = { settingsViewModel.setThemeMode(ThemeMode.DARK) },
+                                selected = uiState.themeMode == ThemeMode.DARK,
                                 label = { Text(text = "Obscuro") }
                             )
                         }

@@ -20,7 +20,7 @@ class LocalDataSource @Inject constructor(
         return productDao.getAllProducts()
     }
 
-    fun getProductById(id: String): Flow<ProductEntity> {
+    fun getProductById(id: String): Flow<ProductEntity?> {
         return productDao.getProductById(id)
     }
 

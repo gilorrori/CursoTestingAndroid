@@ -67,8 +67,10 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override fun getProductById(id: String): Flow<Product?> {
-        val productEntity: Flow<ProductEntity> = localDataSource.getProductById(id)
-        return productEntity.map { it.toDomain() }
+        val productEntity: Flow<ProductEntity?> = localDataSource.getProductById(id)
+        return productEntity.map { it?.toDomain() }.catch { e ->
+            //Analitycs para saber si crash room
+        }
     }
 
     // Obtiene datos de internet por eso es un suspend fun

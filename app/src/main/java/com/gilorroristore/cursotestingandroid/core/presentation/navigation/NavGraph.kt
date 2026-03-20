@@ -19,7 +19,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
         entry<Screen.ProductList> {
             ProductListScreen(navToSettings = {
                 backStack.add(Screen.Settings)
-            }, navToDetail = { productId ->
+            }, navToProductDetail = { productId: String ->
                 backStack.add(Screen.ProductDetail(productId = productId))
             })
         }

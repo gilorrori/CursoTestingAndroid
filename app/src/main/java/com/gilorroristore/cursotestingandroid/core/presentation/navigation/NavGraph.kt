@@ -1,5 +1,10 @@
 package com.gilorroristore.cursotestingandroid.core.presentation.navigation
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
@@ -44,6 +49,14 @@ fun NavGraph(modifier: Modifier = Modifier) {
     NavDisplay(
         backStack = backStack,
         entryProvider = entries,
-        onBack = { backStack.removeLastOrNull() }
+        onBack = { backStack.removeLastOrNull() },
+        transitionSpec = {
+            slideInHorizontally { it } + fadeIn() togetherWith
+                    slideOutHorizontally { -it } + fadeOut()
+        },
+        popTransitionSpec = {
+            slideInHorizontally { -it } + fadeIn() togetherWith
+                    slideOutHorizontally { it } + fadeOut()
+        }
     )
 }

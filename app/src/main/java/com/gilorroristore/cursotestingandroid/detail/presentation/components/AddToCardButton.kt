@@ -8,7 +8,7 @@ import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
 fun AddToCardButton(
     modifier: Modifier = Modifier,
     product: Product?,
-    loading: Boolean,
+    isLoading: Boolean,
     addToCart: () -> Unit
 ) {
     product?.let {
@@ -16,7 +16,7 @@ fun AddToCardButton(
             AddToCardButtonWithStock(
                 modifier = modifier,
                 product = it,
-                loading = loading,
+                isLoading = isLoading,
                 addToCart = addToCart
             )
         } else {

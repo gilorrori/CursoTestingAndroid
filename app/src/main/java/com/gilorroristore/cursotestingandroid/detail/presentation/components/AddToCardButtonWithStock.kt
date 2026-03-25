@@ -25,10 +25,9 @@ import com.gilorroristore.cursotestingandroid.productlist.domain.models.Product
 fun AddToCardButtonWithStock(
     modifier: Modifier = Modifier,
     product: Product,
-    loading: Boolean,
+    isLoading: Boolean,
     addToCart: () -> Unit
 ) {
-
     Surface(
         modifier = modifier.fillMaxWidth(),
         shadowElevation = 8.dp,
@@ -38,7 +37,7 @@ fun AddToCardButtonWithStock(
             Button(
                 modifier = modifier.fillMaxWidth(),
                 onClick = { addToCart() },
-                enabled = !loading,
+                enabled = !isLoading,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {

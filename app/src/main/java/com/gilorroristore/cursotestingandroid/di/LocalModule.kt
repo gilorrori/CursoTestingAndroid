@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
+import com.gilorroristore.cursotestingandroid.cart.data.local.database.dao.CartItemDao
 import com.gilorroristore.cursotestingandroid.core.data.local.database.MiniMarketDatabase
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.ProductDao
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.PromotionDao
@@ -38,6 +39,12 @@ object LocalModule {
     @Singleton
     fun providePromotionDao(db: MiniMarketDatabase): PromotionDao {
         return db.promotionDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCarItemDao(db: MiniMarketDatabase): CartItemDao {
+        return db.cartItemDao()
     }
 
     @Provides

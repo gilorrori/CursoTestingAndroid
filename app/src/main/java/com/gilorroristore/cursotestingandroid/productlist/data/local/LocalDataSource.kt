@@ -48,8 +48,13 @@ class LocalDataSource @Inject constructor(
         cartItemDao.getCartItemById(productId)
 
 
-    suspend fun insertCartItem(cartItemEntity: CartItemEntity) {
-        cartItemDao.insertCartItem(cartItemEntity)
+    suspend fun insertCartItem(cartItemEntity: CartItemEntity) : Result<Unit> {
+        return try {
+            cartItemDao.insertCartItem(cartItemEntity)
+            Result.success(value = Unit)
+        } catch (e: Exception) {
+            Result.failure(exception = e)
+        }
     }
 
     /* Retorna un Result para verificar la actualización */

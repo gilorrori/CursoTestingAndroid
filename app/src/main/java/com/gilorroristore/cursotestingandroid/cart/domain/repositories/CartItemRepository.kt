@@ -7,6 +7,6 @@ interface CartItemRepository {
     fun getCardItems(): Flow<List<CartItem>>
     suspend fun addToCart(productId: String, quantity: Int)
     suspend fun removeFromCart(productId: String)
-    suspend fun updateQuantity(productId: String)
+    suspend fun updateQuantity(productId: String, quantity: Int)
     suspend fun clearCart()
 }

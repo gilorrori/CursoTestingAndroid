@@ -1,31 +1,52 @@
 package com.gilorroristore.cursotestingandroid.cart.data.repositories
 
+import com.gilorroristore.cursotestingandroid.cart.data.mappers.toDomain
+import com.gilorroristore.cursotestingandroid.cart.data.mappers.toEntity
 import com.gilorroristore.cursotestingandroid.cart.domain.model.CartItem
 import com.gilorroristore.cursotestingandroid.cart.domain.repositories.CartItemRepository
+import com.gilorroristore.cursotestingandroid.core.domain.model.AppError
 import com.gilorroristore.cursotestingandroid.productlist.data.local.LocalDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CartItemRepositoryImpl @Inject constructor(
-    val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource
 ) : CartItemRepository {
-    override fun getCardItems(): Flow<List<CartItem>> {
-        TODO("Not yet implemented")
-    }
+
+    override fun getCardItems(): Flow<List<CartItem>> =
+        localDataSource.getAllItemsCart().map { entities ->
+            entities.map { it.toDomain() }
+        }
 
     override suspend fun addToCart(productId: String, quantity: Int) {
 
+        val existingItem = localDataSource.getCartItemById(productId)
+        if (existingItem != null) {
+            val newQuantity = existingItem.quantity + quantity
+            localDataSource.updateCartItem(existingItem.copy(quantity = newQuantity))
+        } else {
+            // Es preferible usar un modelo y transformarlo a entity ya que si cambia algo, solo se modifica en los mappers
+            localDataSource.insertCartItem(
+                cartItemEntity = CartItem(
+                    productId,
+                    quantity
+                ).toEntity()
+            )
+        }
     }
 
     override suspend fun removeFromCart(productId: String) {
-        TODO("Not yet implemented")
+        val item = localDataSource.getCartItemById(productId) ?: throw AppError.NotFoundError
+        localDataSource.deleteCartItem(item)
     }
 
-    override suspend fun updateQuantity(productId: String) {
-        TODO("Not yet implemented")
+    override suspend fun updateQuantity(productId: String, quantity: Int) {
+        val item = localDataSource.getCartItemById(productId) ?: throw AppError.NotFoundError
+        localDataSource.updateCartItem(item.copy(quantity = quantity))
     }
 
     override suspend fun clearCart() {
-        TODO("Not yet implemented")
+        localDataSource.clearCart()
     }
 }

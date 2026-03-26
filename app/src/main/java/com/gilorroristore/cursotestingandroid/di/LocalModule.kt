@@ -8,8 +8,6 @@ import androidx.room.Room
 import com.gilorroristore.cursotestingandroid.core.data.local.database.MiniMarketDatabase
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.ProductDao
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.PromotionDao
-import com.gilorroristore.cursotestingandroid.productlist.data.repositories.SettingsRepositoryImpl
-import com.gilorroristore.cursotestingandroid.productlist.domain.repositories.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

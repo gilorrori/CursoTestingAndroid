@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
-import com.gilorroristore.cursotestingandroid.productlist.data.local.database.MiniMarketDatabase
+import com.gilorroristore.cursotestingandroid.core.data.local.database.MiniMarketDatabase
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.ProductDao
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.dao.PromotionDao
 import com.gilorroristore.cursotestingandroid.productlist.data.repositories.SettingsRepositoryImpl

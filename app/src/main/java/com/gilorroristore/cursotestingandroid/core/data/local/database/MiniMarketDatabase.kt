@@ -1,4 +1,4 @@
-package com.gilorroristore.cursotestingandroid.productlist.data.local.database
+package com.gilorroristore.cursotestingandroid.core.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

@@ -7,6 +7,7 @@ import com.gilorroristore.cursotestingandroid.productlist.data.local.database.da
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.entities.ProductEntity
 import com.gilorroristore.cursotestingandroid.productlist.data.local.database.entities.PromotionEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 /*Persistencia local en Room, esta clase funciona como puente entre el dao y el repositorio*/
@@ -25,6 +26,13 @@ class LocalDataSource @Inject constructor(
 
     fun getProductById(id: String): Flow<ProductEntity?> {
         return productDao.getProductById(id)
+    }
+
+    fun getProductsById(productIds: Set<String>): Flow<List<ProductEntity>> {
+        /* Si alguno es vacio como Room no soporta listas vacias y evitando que truene se haria esto*/
+        if(productIds.isEmpty()) return flowOf(emptyList())
+
+        return productDao.getProductByIds(productIds.toList())
     }
 
     suspend fun saveProducts(products: List<ProductEntity>) {

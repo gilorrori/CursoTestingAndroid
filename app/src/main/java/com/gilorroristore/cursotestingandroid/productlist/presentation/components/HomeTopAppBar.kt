@@ -5,6 +5,7 @@ package com.gilorroristore.cursotestingandroid.productlist.presentation.componen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,7 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 fun HomeTopAppBar(
     filtersVisible: Boolean = false,
     onFiltersSelect: (Boolean) -> Unit = {},
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    navigateToCart: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -37,6 +39,14 @@ fun HomeTopAppBar(
         ),
 
         actions = {
+            IconButton(onClick = { navigateToCart() }) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Cart",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
             IconButton(onClick = { onFiltersSelect(!filtersVisible) }) {
                 Icon(
                     imageVector = Icons.Default.FilterList,

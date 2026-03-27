@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.gilorroristore.cursotestingandroid.cart.presentation.CartScreen
 import com.gilorroristore.cursotestingandroid.detail.presentation.DetailScreen
 import com.gilorroristore.cursotestingandroid.productlist.presentation.ProductListScreen
 import com.gilorroristore.cursotestingandroid.settings.presentation.SettingsScreen
@@ -22,11 +23,15 @@ fun NavGraph(modifier: Modifier = Modifier) {
     val entries = entryProvider<NavKey> {
 
         entry<Screen.ProductList> {
-            ProductListScreen(navToSettings = {
-                backStack.add(Screen.Settings)
-            }, navToProductDetail = { productId: String ->
-                backStack.add(Screen.ProductDetail(productId = productId))
-            })
+            ProductListScreen(
+                navToSettings = {
+                    backStack.add(Screen.Settings)
+                }, navToProductDetail = { productId: String ->
+                    backStack.add(Screen.ProductDetail(productId = productId))
+                }, navToCart = {
+                    backStack.add(Screen.Cart)
+                }
+            )
         }
 
         entry<Screen.Settings> {
@@ -35,7 +40,11 @@ fun NavGraph(modifier: Modifier = Modifier) {
             )
         }
 
-        entry<Screen.Cart> {}
+        entry<Screen.Cart> {
+            CartScreen(onBack = {
+                backStack.removeLastOrNull()
+            })
+        }
 
         entry<Screen.ProductDetail> {
             DetailScreen(

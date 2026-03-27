@@ -38,7 +38,8 @@ import com.gilorroristore.cursotestingandroid.productlist.presentation.component
 fun ProductListScreen(
     productListViewModel: ProductListViewModel = hiltViewModel(),
     navToSettings: () -> Unit,
-    navToProductDetail: (String) -> Unit
+    navToProductDetail: (String) -> Unit,
+    navToCart: () -> Unit
 ) {
     /* collectAsStateWithLifecycle la mejor manera para anclarse al lifecycle */
     val uiState by productListViewModel.uiState.collectAsStateWithLifecycle()
@@ -61,7 +62,9 @@ fun ProductListScreen(
             HomeTopAppBar(
                 filtersVisible = filtersVisible,
                 onFiltersSelect = { showFilters -> productListViewModel.setFilterVisible(showFilters) },
-                navigateToSettings = { navToSettings() })
+                navigateToSettings = { navToSettings() },
+                navigateToCart = { navToCart() }
+            )
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }) { paddingValues ->
 

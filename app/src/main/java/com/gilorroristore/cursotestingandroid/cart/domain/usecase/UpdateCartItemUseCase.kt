@@ -6,7 +6,7 @@ import com.gilorroristore.cursotestingandroid.productlist.domain.repositories.Pr
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class UpdateCardItemUseCase @Inject constructor(
+class UpdateCartItemUseCase @Inject constructor(
     private val cartItemRepository: CartItemRepository,
     private val productRepository: ProductRepository
 ) {

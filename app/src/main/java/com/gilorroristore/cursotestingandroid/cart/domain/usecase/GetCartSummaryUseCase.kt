@@ -43,7 +43,6 @@ class GetCartSummaryUseCase @Inject constructor(
                     calculateSummary(cartItems, products, promotions)
                 }
             }
-
         }
     }
 
@@ -52,7 +51,8 @@ class GetCartSummaryUseCase @Inject constructor(
     ): CartSummary {
         val now = Instant.now()
         val activePromotions =
-            promotions.filter { it.startTime <= now && it.endTime >= now }/* associateBy se itera sobre un parametro en particular en este caso ID que es un string */
+            promotions.filter { it.startTime <= now && it.endTime >= now }
+        /* associateBy se itera sobre un parametro en particular en este caso ID que es un string */
         val productsById: Map<String, Product> = products.associateBy { it.id }
         var subtotal = 0.0
         var discountTotal = 0.0

@@ -1,5 +1,7 @@
 package com.gilorroristore.cursotestingandroid.di
 
+import com.gilorroristore.cursotestingandroid.cart.data.repositories.CartItemRepositoryImpl
+import com.gilorroristore.cursotestingandroid.cart.domain.repositories.CartItemRepository
 import com.gilorroristore.cursotestingandroid.core.data.coroutines.DefaultDispatchersProvider
 import com.gilorroristore.cursotestingandroid.core.domain.coroutines.DispatchersProviders
 import com.gilorroristore.cursotestingandroid.productlist.data.repositories.ProductRepositoryImpl
@@ -40,5 +42,11 @@ object DataModule {
     @Singleton
     fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository {
         return settingsRepositoryImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartItemRepository(cartItemRepositoryImpl: CartItemRepositoryImpl): CartItemRepository {
+        return cartItemRepositoryImpl
     }
 }

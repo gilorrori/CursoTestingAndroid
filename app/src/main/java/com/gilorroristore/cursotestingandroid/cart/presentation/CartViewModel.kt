@@ -45,7 +45,7 @@ class CartViewModel @Inject constructor(
         loadCart()
     }
 
-    private fun loadCart() {
+    fun loadCart() {
         _uiState.value =
             CartUiState.Loading/* si el cartJob esta corriendo se cancela y se carga de nuevo*/
         cartJob?.cancel()
@@ -81,7 +81,7 @@ class CartViewModel @Inject constructor(
                 }
             }
         }.catch { e: Throwable ->
-            _events.emit(CartEvent.ShowMessage(e.message.orEmpty()))
+            _uiState.value = CartUiState.Error(e.message.orEmpty())
         }.launchIn(viewModelScope)
     }
 

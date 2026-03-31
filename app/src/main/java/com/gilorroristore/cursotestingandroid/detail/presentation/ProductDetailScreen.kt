@@ -67,6 +67,7 @@ fun DetailScreen(
 
                 ProductDetailEvent.NETWORK_ERROR -> snackbarHostState.showSnackbar("No hay conexión a internet.")
                 ProductDetailEvent.UNKNOWN_ERROR -> snackbarHostState.showSnackbar("Error desconocido, vuelva a intentar.")
+                ProductDetailEvent.SUCCESS_ADD_TO -> snackbarHostState.showSnackbar("Producto añadido.")
             }
         }
     }

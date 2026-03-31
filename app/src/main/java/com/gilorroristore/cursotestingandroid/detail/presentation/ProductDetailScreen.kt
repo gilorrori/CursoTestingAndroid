@@ -16,11 +16,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,10 +48,27 @@ fun DetailScreen(
     productDetailViewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by productDetailViewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     /*Cuando id tenga un valor se hara la lamada*/
     LaunchedEffect(productId) {
         productDetailViewModel.loadProduct(productId)
+    }
+
+    /* Colectando erroes de eventos */
+    LaunchedEffect(Unit) {
+        productDetailViewModel.event.collect { event ->
+            when (event) {
+                ProductDetailEvent.INSUFFICIENT_STOCK_ERROR -> {
+                    /* Ya estando en el context de android (view) acceder a recursos strings como buena
+                    * práctica */
+                    snackbarHostState.showSnackbar("No hay suficiente Stock.")
+                }
+
+                ProductDetailEvent.NETWORK_ERROR -> snackbarHostState.showSnackbar("No hay conexión a internet.")
+                ProductDetailEvent.UNKNOWN_ERROR -> snackbarHostState.showSnackbar("Error desconocido, vuelva a intentar.")
+            }
+        }
     }
 
     Scaffold(
@@ -66,7 +86,8 @@ fun DetailScreen(
             ) {
                 productDetailViewModel.addToCart()
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier

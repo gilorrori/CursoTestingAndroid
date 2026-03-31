@@ -1,6 +1,7 @@
 package com.gilorroristore.cursotestingandroid.detail.presentation
 
 sealed interface ProductDetailEvent {
-    data class ShowMessage(val message: String) : ProductDetailEvent
-    data class ShowError(val message: String) : ProductDetailEvent
+    data object UNKNOWN_ERROR : ProductDetailEvent
+    data object NETWORK_ERROR : ProductDetailEvent
+    data object INSUFFICIENT_STOCK_ERROR : ProductDetailEvent
 }

@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -104,7 +105,7 @@ fun CartSuccessStateScreen(
             .fillMaxSize()
             .padding(16.dp),
         contentAlignment = Alignment.Center
-        ) {
+    ) {
         if (state.cartItems.isEmpty()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -175,14 +176,18 @@ fun CartItemCard(
                 .padding(8.dp)
         ) {
             AsyncImage(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(16.dp)),
                 model = product.imageUrl,
                 contentDescription = product.name,
                 contentScale = ContentScale.Crop
             )
 
             Column(
-                modifier = Modifier.weight(3f)
+                modifier = Modifier
+                    .weight(3f)
+                    .padding(horizontal = 16.dp)
             ) {
                 Text(text = product.name)
                 //Promo

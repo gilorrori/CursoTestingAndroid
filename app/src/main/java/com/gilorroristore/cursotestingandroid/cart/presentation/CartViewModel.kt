@@ -110,7 +110,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun decreaseQuantity(productId: String, currentQuantity: Int) {
-        if (currentQuantity < 1) {
+        if (currentQuantity > 1) {
             updateCartItem(productId, currentQuantity - 1)
         } else {
             removeFromCart(productId)

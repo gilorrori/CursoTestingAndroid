@@ -49,8 +49,6 @@ class ProductDetailViewModel @Inject constructor(
                 } else {
                     handleError(AppError.UnknownError(e.message.orEmpty()))
                 }
-
-
             }
             .launchIn(viewModelScope)
     }

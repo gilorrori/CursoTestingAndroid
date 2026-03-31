@@ -124,7 +124,8 @@ fun DetailScreen(
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
                             Column(
                                 modifier = Modifier.padding(24.dp),
@@ -140,6 +141,7 @@ fun DetailScreen(
                                 )
                                 Text(
                                     text = product.name,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     style = MaterialTheme.typography.headlineMedium
                                 )
 
@@ -159,7 +161,11 @@ fun DetailScreen(
                                 }
 
                                 if (product.description.isNotBlank()) {
-                                    Text(text = product.description)
+                                    Text(
+                                        text = product.description,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 }
 
                                 HorizontalDivider()
@@ -225,13 +231,17 @@ fun DetailScreen(
 
                                     HorizontalDivider()
 
-                                    val hasStock: Boolean = product.stock > 0
-                                    val colorStock =
-                                        if (hasStock) {
-                                            MaterialTheme.colorScheme.onPrimaryContainer
-                                        } else {
-                                            MaterialTheme.colorScheme.onErrorContainer
-                                        }
+                                    val hasStock = product.stock > 0
+                                    val stockContainerColor = if (hasStock) {
+                                        MaterialTheme.colorScheme.primaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.errorContainer
+                                    }
+                                    val stockContentColor = if (hasStock) {
+                                        MaterialTheme.colorScheme.onPrimaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.onErrorContainer
+                                    }
 
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
@@ -241,12 +251,12 @@ fun DetailScreen(
                                         Text(
                                             "Stock Disponible",
                                             style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
 
                                         Surface(
                                             shape = RoundedCornerShape(12.dp),
-                                            color = colorStock
+                                            color = stockContainerColor
                                         ) {
                                             Text(
                                                 text = if (hasStock) {
@@ -260,7 +270,7 @@ fun DetailScreen(
                                                 ),
                                                 style = MaterialTheme.typography.bodyLarge,
                                                 fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.secondaryContainer
+                                                color = stockContentColor
                                             )
                                         }
                                     }

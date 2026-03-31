@@ -96,7 +96,6 @@ fun ProductListScreen(
             }
 
             is ProductListUiState.Error -> {
-
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -104,7 +103,9 @@ fun ProductListScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = state.message, fontSize = 30.sp, color = Color.Red
+                        text = state.message,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
             }

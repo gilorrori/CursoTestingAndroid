@@ -97,7 +97,7 @@ fun ProductItem(item: ProductWithPromotion, onClick: (ProductWithPromotion) -> U
                         Text(
                             text = promoBadge,
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onError,
                             fontWeight = FontWeight.Bold
                         )
                     }

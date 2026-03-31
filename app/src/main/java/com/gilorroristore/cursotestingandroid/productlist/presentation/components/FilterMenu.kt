@@ -31,14 +31,17 @@ fun FiltersMenu(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
         Column(
             modifier = modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Categorias"
+                text = "Categorias",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Row(
@@ -68,7 +71,11 @@ fun FiltersMenu(
 
             HorizontalDivider()
 
-            Text(text = "Ordenar por")
+            Text(
+                text = "Ordenar por",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Row(
                 modifier
                     .fillMaxWidth(),
@@ -84,14 +91,14 @@ fun FiltersMenu(
                 FilterChip(
                     modifier = Modifier.weight(1f),
                     selected = state.sortOption == SortOption.PRICE_DESC,
-                    onClick = { onSortSelected(SortOption.PRICE_DESC)},
+                    onClick = { onSortSelected(SortOption.PRICE_DESC) },
                     label = { Text(text = "Precio ⬇", style = MaterialTheme.typography.labelSmall) }
                 )
 
                 FilterChip(
                     modifier = Modifier.weight(1f),
                     selected = state.sortOption == SortOption.DISCOUNT,
-                    onClick = { onSortSelected(SortOption.DISCOUNT)},
+                    onClick = { onSortSelected(SortOption.DISCOUNT) },
                     label = {
                         Text(
                             text = "Descuento",

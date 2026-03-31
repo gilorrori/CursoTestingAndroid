@@ -14,15 +14,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,9 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.gilorroristore.cursotestingandroid.cart.presentation.model.CartItemsWithPromotion
+import com.gilorroristore.cursotestingandroid.cart.presentation.model.CartItemWithPromotion
 import com.gilorroristore.cursotestingandroid.core.presentation.components.MarketTopAppBar
 import com.gilorroristore.cursotestingandroid.core.presentation.components.QuantitySelector
+import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductPromotion
 import java.text.NumberFormat
 import java.util.Currency
 
@@ -51,7 +58,7 @@ fun CartScreen(
 
 
     LaunchedEffect(Unit) {
-        cartViewModel.events.collect { event ->
+        cartViewModel.event.collect { event ->
             when (event) {
                 is CartEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
             }
@@ -87,6 +94,9 @@ fun CartScreen(
                         cartViewModel.decreaseQuantity(
                             productId = productId, currentQuantity = quantity
                         )
+                    },
+                    onRemove = {
+                        cartViewModel.removeFromCart(it)
                     })
             }
         }
@@ -99,6 +109,7 @@ fun CartSuccessStateScreen(
     state: CartUiState.Success,
     onIncreaseQuantity: (String, Int) -> Unit,
     onDecreaseQuantity: (String, Int) -> Unit,
+    onRemove: (String) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -130,7 +141,7 @@ fun CartSuccessStateScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.cartItems) { itemWithProduct ->
+                items(state.cartItems, key = { it.cartItem.productId }) { itemWithProduct ->
                     CartItemCard(
                         itemWithProduct = itemWithProduct,
                         onIncreaseQuantity = { productId, quantity ->
@@ -139,8 +150,8 @@ fun CartSuccessStateScreen(
                         onDecreaseQuantity = { productId, quantity ->
                             onDecreaseQuantity(productId, quantity)
                         },
-                        onRemove = {
-
+                        onRemove = { id ->
+                            onRemove(id)
                         })
                 }
             }
@@ -150,13 +161,24 @@ fun CartSuccessStateScreen(
 
 @Composable
 fun CartItemCard(
-    itemWithProduct: CartItemsWithPromotion,
+    itemWithProduct: CartItemWithPromotion,
     onIncreaseQuantity: (String, Int) -> Unit,
     onDecreaseQuantity: (String, Int) -> Unit,
-    onRemove: () -> Unit
+    onRemove: (String) -> Unit
 ) {
-    val product = itemWithProduct.product
+    val product = itemWithProduct.item.product
+    val promotion = itemWithProduct.item.promotion
     val cartItem = itemWithProduct.cartItem
+
+    val unitPrice = when (promotion) {
+        is ProductPromotion.BuyXPayY -> product.price
+        is ProductPromotion.Percent -> promotion.discountedPrice
+        null -> product.price
+    }
+
+    val hasDiscount = promotion is ProductPromotion.Percent
+    val itemTotal = unitPrice * cartItem.quantity
+
 
     // preparando la moneda local y que siempre lo recuerde sin generarlo cada que se recomponga
     val currencyFormatter = remember {
@@ -165,49 +187,78 @@ fun CartItemCard(
         }
     }
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            AsyncImage(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(16.dp)),
-                model = product.imageUrl,
-                contentDescription = product.name,
-                contentScale = ContentScale.Crop
-            )
+    val dismissState = rememberSwipeToDismissBoxState()
 
-            Column(
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd) {
+            onRemove(cartItem.productId)
+            // Una vez que se haga el slide cambiar el estado su estado original.
+            dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+        }
+    }
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromEndToStart = false,
+        backgroundContent = {
+            Box(
                 modifier = Modifier
-                    .weight(3f)
-                    .padding(horizontal = 16.dp)
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.errorContainer),
+                contentAlignment = Alignment.CenterStart
             ) {
-                Text(text = product.name)
-                //Promo
-                Text(text = "Total: ${currencyFormatter.format(product.price)}")
-                QuantitySelector(
-                    modifier = Modifier.background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp)
-                    ),
-                    quantity = cartItem.quantity.toString(),
-                    canDecrease = cartItem.quantity > 1,
-                    canIncrease = cartItem.quantity < product.stock,
-                    onDecreaseSelected = { onDecreaseQuantity(product.id, cartItem.quantity) },
-                    onIncreaseSelected = { onIncreaseQuantity(product.id, cartItem.quantity) })
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = null,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
+        }
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp)),
+                    model = product.imageUrl,
+                    contentDescription = product.name,
+                    contentScale = ContentScale.Crop
+                )
+
+                Column(
+                    modifier = Modifier
+                        .weight(3f)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(text = product.name)
+                    //Promo
+                    Text(text = "Total: ${currencyFormatter.format(product.price)}")
+                    QuantitySelector(
+                        modifier = Modifier.background(
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                        quantity = cartItem.quantity.toString(),
+                        canDecrease = cartItem.quantity > 1,
+                        canIncrease = cartItem.quantity < product.stock,
+                        onDecreaseSelected = { onDecreaseQuantity(product.id, cartItem.quantity) },
+                        onIncreaseSelected = { onIncreaseQuantity(product.id, cartItem.quantity) })
+                }
             }
         }
     }
 }
-
 
 @Composable
 fun CartErrorStateScreen(

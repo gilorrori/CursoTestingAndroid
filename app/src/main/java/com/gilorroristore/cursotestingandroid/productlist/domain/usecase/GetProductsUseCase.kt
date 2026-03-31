@@ -1,5 +1,6 @@
 package com.gilorroristore.cursotestingandroid.productlist.domain.usecase
 
+import com.gilorroristore.cursotestingandroid.cart.domain.ex.activeAt
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductPromotion
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.ProductWithPromotion
 import com.gilorroristore.cursotestingandroid.productlist.domain.models.Promotion
@@ -26,9 +27,7 @@ class GetProductsUseCase @Inject constructor(
         ) { products, promotions, inStockOnly ->
 
             val now = Instant.now()
-            val activePromotions: List<Promotion> = promotions.filter {
-                it.startTime <= now && it.endTime >= now
-            }
+            val activePromotions: List<Promotion> = promotions.activeAt(now)
 
             val filteredProduct = if (inStockOnly) {
                 products.filter { it.stock > 0 }

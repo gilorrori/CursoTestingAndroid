@@ -1,7 +1,6 @@
 package com.gilorroristore.cursotestingandroid.core.presentation.navigation
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -20,6 +19,8 @@ import com.gilorroristore.cursotestingandroid.settings.presentation.SettingsScre
 fun NavGraph(modifier: Modifier = Modifier) {
     // La pantalla que iniciara primero
     val backStack = rememberNavBackStack(Screen.ProductList)
+    val TRANSITION_DURATION = 350
+
     val entries = entryProvider<NavKey> {
 
         entry<Screen.ProductList> {
@@ -59,13 +60,36 @@ fun NavGraph(modifier: Modifier = Modifier) {
         backStack = backStack,
         entryProvider = entries,
         onBack = { backStack.removeLastOrNull() },
+        // Animación de entrada
         transitionSpec = {
-            slideInHorizontally { it } + fadeIn() togetherWith
-                    slideOutHorizontally { -it } + fadeOut()
+            slideInHorizontally(
+                animationSpec = tween(TRANSITION_DURATION),
+                initialOffsetX = { it }
+            ) togetherWith slideOutHorizontally(
+                animationSpec = tween(TRANSITION_DURATION),
+                targetOffsetX = { -it }
+            )
+
+            /*slideInHorizontally { it } + fadeIn() togetherWith
+                    slideOutHorizontally { -it } + fadeOut()*/
         },
         popTransitionSpec = {
-            slideInHorizontally { -it } + fadeIn() togetherWith
-                    slideOutHorizontally { it } + fadeOut()
+            slideInHorizontally(
+                animationSpec = tween(TRANSITION_DURATION),
+                initialOffsetX = { -it }
+            ) togetherWith slideOutHorizontally(
+                animationSpec = tween(TRANSITION_DURATION),
+                targetOffsetX = { it }
+            )
+        },
+        predictivePopTransitionSpec = {
+            slideInHorizontally(
+                animationSpec = tween(TRANSITION_DURATION),
+                initialOffsetX = { -it }
+            ) togetherWith slideOutHorizontally(
+                animationSpec = tween(TRANSITION_DURATION),
+                targetOffsetX = { it }
+            )
         }
     )
 }

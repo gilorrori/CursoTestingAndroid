@@ -1,5 +1,6 @@
 package com.gilorroristore.cursotestingandroid.cart.presentation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -114,45 +116,48 @@ fun CartSuccessStateScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+            .padding(16.dp)
     ) {
-        if (state.cartItems.isEmpty()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(text = "🛒", style = MaterialTheme.typography.displayLarge)
-                Text(
-                    text = "Tu carrito esta vacío",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Agrega productos para comenzar",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(state.cartItems, key = { it.cartItem.productId }) { itemWithProduct ->
-                    CartItemCard(
-                        itemWithProduct = itemWithProduct,
-                        onIncreaseQuantity = { productId, quantity ->
-                            onIncreaseQuantity(productId, quantity)
-                        },
-                        onDecreaseQuantity = { productId, quantity ->
-                            onDecreaseQuantity(productId, quantity)
-                        },
-                        onRemove = { id ->
-                            onRemove(id)
-                        })
+        AnimatedContent(state.cartItems.isEmpty()) { isEmpty ->
+            if (isEmpty) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(text = "🛒", style = MaterialTheme.typography.displayLarge)
+                    Text(
+                        text = "Tu carrito esta vacío",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Agrega productos para comenzar",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(state.cartItems, key = { it.cartItem.productId }) { itemWithProduct ->
+                        CartItemCard(
+                            modifier = Modifier.animateItem(),
+                            itemWithProduct = itemWithProduct,
+                            onIncreaseQuantity = { productId, quantity ->
+                                onIncreaseQuantity(productId, quantity)
+                            },
+                            onDecreaseQuantity = { productId, quantity ->
+                                onDecreaseQuantity(productId, quantity)
+                            },
+                            onRemove = { id ->
+                                onRemove(id)
+                            })
+                    }
                 }
             }
         }
@@ -161,6 +166,7 @@ fun CartSuccessStateScreen(
 
 @Composable
 fun CartItemCard(
+    modifier: Modifier,
     itemWithProduct: CartItemWithPromotion,
     onIncreaseQuantity: (String, Int) -> Unit,
     onDecreaseQuantity: (String, Int) -> Unit,
@@ -198,6 +204,7 @@ fun CartItemCard(
     }
 
     SwipeToDismissBox(
+        modifier = modifier,
         state = dismissState,
         enableDismissFromEndToStart = false,
         backgroundContent = {
@@ -230,6 +237,7 @@ fun CartItemCard(
                 AsyncImage(
                     modifier = Modifier
                         .weight(1f)
+                        .height(80.dp)
                         .clip(RoundedCornerShape(16.dp)),
                     model = product.imageUrl,
                     contentDescription = product.name,
@@ -238,12 +246,51 @@ fun CartItemCard(
 
                 Column(
                     modifier = Modifier
-                        .weight(3f)
-                        .padding(horizontal = 16.dp)
+                        .weight(3f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = product.name)
+                    Text(
+                        text = product.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        if (hasDiscount) {
+                            Text(
+                                text = currencyFormatter.format(product.price),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textDecoration = TextDecoration.LineThrough
+                            )
+
+                            Text(
+                                text = "${currencyFormatter.format(unitPrice)} c/u",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                        } else {
+                            Text(
+                                text = "${currencyFormatter.format(unitPrice)} c/u",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                    }
                     //Promo
-                    Text(text = "Total: ${currencyFormatter.format(product.price)}")
+                    Text(
+                        text = "Total: ${currencyFormatter.format(itemTotal)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                     QuantitySelector(
                         modifier = Modifier.background(
                             color = MaterialTheme.colorScheme.surfaceVariant,

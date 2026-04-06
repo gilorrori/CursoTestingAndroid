@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.gilorroristore.cursotestingandroid.cart.domain.model.CartSummary
 import com.gilorroristore.cursotestingandroid.cart.presentation.model.CartItemWithPromotion
 import com.gilorroristore.cursotestingandroid.core.presentation.components.MarketTopAppBar
 import com.gilorroristore.cursotestingandroid.core.presentation.components.QuantitySelector
@@ -69,7 +73,8 @@ fun CartScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { MarketTopAppBar("Carrito") { onBack() } }) { paddingValues ->
+        topBar = { MarketTopAppBar("Carrito") { onBack() } }
+    ) { paddingValues ->
 
         when (val state = uiState) {
             CartUiState.Loading -> {
@@ -113,7 +118,15 @@ fun CartSuccessStateScreen(
     onDecreaseQuantity: (String, Int) -> Unit,
     onRemove: (String) -> Unit
 ) {
-    Box(
+
+    // preparando la moneda local y que siempre lo recuerde sin generarlo cada que se recomponga
+    val currencyFormatter = remember {
+        NumberFormat.getCurrencyInstance().apply {
+            currency = Currency.getInstance("USD")
+        }
+    }
+
+    Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
@@ -125,6 +138,7 @@ fun CartSuccessStateScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    Spacer(modifier = Modifier.height(54.dp))
                     Text(text = "🛒", style = MaterialTheme.typography.displayLarge)
                     Text(
                         text = "Tu carrito esta vacío",
@@ -140,7 +154,7 @@ fun CartSuccessStateScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -148,6 +162,7 @@ fun CartSuccessStateScreen(
                         CartItemCard(
                             modifier = Modifier.animateItem(),
                             itemWithProduct = itemWithProduct,
+                            currencyFormatter = currencyFormatter,
                             onIncreaseQuantity = { productId, quantity ->
                                 onIncreaseQuantity(productId, quantity)
                             },
@@ -156,9 +171,98 @@ fun CartSuccessStateScreen(
                             },
                             onRemove = { id ->
                                 onRemove(id)
-                            })
+                            }
+                        )
                     }
                 }
+            }
+        }
+
+        if (state.cartItems.isNotEmpty() && state.summary != null) {
+            CartSummaryCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                summary = state.summary,
+                currencyFormatter = currencyFormatter
+            )
+        }
+    }
+}
+
+@Composable
+fun CartSummaryCard(modifier: Modifier, summary: CartSummary, currencyFormatter: NumberFormat) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Resumen del carrito",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.Bold
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Subtotal",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Text(
+                    text = currencyFormatter.format(summary.subtotal),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
+            if (summary.discountTotal > 0) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Descuento",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    Text(
+                        text = currencyFormatter.format(summary.discountTotal),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Total",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = currencyFormatter.format(summary.finalTotal),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -168,9 +272,10 @@ fun CartSuccessStateScreen(
 fun CartItemCard(
     modifier: Modifier,
     itemWithProduct: CartItemWithPromotion,
+    currencyFormatter: NumberFormat,
     onIncreaseQuantity: (String, Int) -> Unit,
     onDecreaseQuantity: (String, Int) -> Unit,
-    onRemove: (String) -> Unit
+    onRemove: (String) -> Unit,
 ) {
     val product = itemWithProduct.item.product
     val promotion = itemWithProduct.item.promotion
@@ -184,14 +289,6 @@ fun CartItemCard(
 
     val hasDiscount = promotion is ProductPromotion.Percent
     val itemTotal = unitPrice * cartItem.quantity
-
-
-    // preparando la moneda local y que siempre lo recuerde sin generarlo cada que se recomponga
-    val currencyFormatter = remember {
-        NumberFormat.getCurrencyInstance().apply {
-            currency = Currency.getInstance("USD")
-        }
-    }
 
     val dismissState = rememberSwipeToDismissBoxState()
 
@@ -232,22 +329,24 @@ fun CartItemCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
                     .padding(8.dp)
             ) {
                 AsyncImage(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(100.dp)
+                        .weight(1.5f)
+                        .height(110.dp)
                         .clip(RoundedCornerShape(16.dp)),
                     model = product.imageUrl,
                     contentDescription = product.name,
                     contentScale = ContentScale.Crop
                 )
 
+                Spacer(modifier = Modifier.width(8.dp))
+
                 Column(
                     modifier = Modifier
-                        .weight(3f)
-                        .padding(horizontal = 8.dp),
+                        .weight(3f),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(

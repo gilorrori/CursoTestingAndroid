@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -62,13 +63,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     //Retrofit
-    implementation (libs.retrofit)
-    implementation (libs.okhttp)
-    implementation (libs.okhttp.logging)
-    implementation (libs.converter.kotlinx.serialization)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.converter.kotlinx.serialization)
 
     //Icons
-    implementation (libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material.icons.extended)
     //Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -85,7 +86,7 @@ dependencies {
 
     //Room
     implementation(libs.room.ktx)
-    implementation (libs.room.runtime)
+    implementation(libs.room.runtime)
     ksp(libs.room.compiler.ksp)
 
     //DataStore
@@ -101,4 +102,8 @@ dependencies {
 
     //Viewmodel
     implementation(libs.lifecycle.viewmodel.compose)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 }

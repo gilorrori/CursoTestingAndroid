@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "962758911236",
+    "project_id": "cursotestingjc",
+    "storage_bucket": "cursotestingjc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962758911236:android:f34ac91f2fbbf9cf19dc51",
+        "android_client_info": {
+          "package_name": "com.gilorroristore.cursotestingandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtBomVutR1tLQ1mU-MhgjRwnJvz665Qpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

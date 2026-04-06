@@ -63,6 +63,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
         // Animación de entrada
         transitionSpec = {
             slideInHorizontally(
+                // donde inicia al hacer esto se empieza desde fuera para que entre la nueva screen
                 animationSpec = tween(TRANSITION_DURATION),
                 initialOffsetX = { it }
             ) togetherWith slideOutHorizontally(
@@ -82,6 +83,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
                 targetOffsetX = { it }
             )
         },
+        // Funciona a partir de Android 13 con el swipe back
         predictivePopTransitionSpec = {
             slideInHorizontally(
                 animationSpec = tween(TRANSITION_DURATION),

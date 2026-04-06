@@ -22,6 +22,7 @@ okhttp = "5.3.2"
 coroutines = "1.10.2"
 googleServices = "4.4.4"
 firebaseBom = "34.11.0"
+crashlytics = "3.0.6"
 
 
 [libraries]
@@ -90,4 +91,5 @@ devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 #Kotlin serialization
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-
+#Firebase
+crashlytics = { id ="com.google.firebase.crashlytics", version.ref = "crashlytics"}

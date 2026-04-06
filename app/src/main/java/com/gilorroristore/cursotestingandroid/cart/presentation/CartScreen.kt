@@ -237,7 +237,7 @@ fun CartItemCard(
                 AsyncImage(
                     modifier = Modifier
                         .weight(1f)
-                        .height(80.dp)
+                        .height(100.dp)
                         .clip(RoundedCornerShape(16.dp)),
                     model = product.imageUrl,
                     contentDescription = product.name,
@@ -246,7 +246,8 @@ fun CartItemCard(
 
                 Column(
                     modifier = Modifier
-                        .weight(3f),
+                        .weight(3f)
+                        .padding(horizontal = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
@@ -260,7 +261,6 @@ fun CartItemCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-
                         if (hasDiscount) {
                             Text(
                                 text = currencyFormatter.format(product.price),

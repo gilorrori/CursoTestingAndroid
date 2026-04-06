@@ -11,6 +11,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.gilorroristore.cursotestingandroid.cart.presentation.CartScreen
+import com.gilorroristore.cursotestingandroid.core.presentation.ex.back
+import com.gilorroristore.cursotestingandroid.core.presentation.ex.navigateTo
 import com.gilorroristore.cursotestingandroid.detail.presentation.DetailScreen
 import com.gilorroristore.cursotestingandroid.productlist.presentation.ProductListScreen
 import com.gilorroristore.cursotestingandroid.settings.presentation.SettingsScreen
@@ -26,31 +28,31 @@ fun NavGraph(modifier: Modifier = Modifier) {
         entry<Screen.ProductList> {
             ProductListScreen(
                 navToSettings = {
-                    backStack.add(Screen.Settings)
+                    backStack.navigateTo(Screen.Settings)
                 }, navToProductDetail = { productId: String ->
-                    backStack.add(Screen.ProductDetail(productId = productId))
+                    backStack.navigateTo(Screen.ProductDetail(productId = productId))
                 }, navToCart = {
-                    backStack.add(Screen.Cart)
+                    backStack.navigateTo(Screen.Cart)
                 }
             )
         }
 
         entry<Screen.Settings> {
             SettingsScreen(
-                onBack = { backStack.remove(it) }
+                onBack = { backStack.back() }
             )
         }
 
         entry<Screen.Cart> {
             CartScreen(onBack = {
-                backStack.removeLastOrNull()
+                backStack.back()
             })
         }
 
         entry<Screen.ProductDetail> {
             DetailScreen(
                 productId = it.productId,
-                onBack = { backStack.remove(it) }
+                onBack = { backStack.back() }
             )
         }
     }
@@ -59,7 +61,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
     NavDisplay(
         backStack = backStack,
         entryProvider = entries,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = { backStack.back() },
         // Animación de entrada
         transitionSpec = {
             slideInHorizontally(
@@ -70,9 +72,6 @@ fun NavGraph(modifier: Modifier = Modifier) {
                 animationSpec = tween(TRANSITION_DURATION),
                 targetOffsetX = { -it }
             )
-
-            /*slideInHorizontally { it } + fadeIn() togetherWith
-                    slideOutHorizontally { -it } + fadeOut()*/
         },
         popTransitionSpec = {
             slideInHorizontally(
